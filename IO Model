@@ -1,0 +1,27 @@
+1. MPM和IO
+MPM： Multi processing module
+Prefork MPM：多进程I/O模型，主进程生成多个子进程，每个子进程处理一个请求（稳定，缺点是内存消耗过高，CentOS 7 默认模型）
+
+Worker MPM：多进程多线程，主进程生成多个子进程，每个子进程生成多个线程，一个线程处理一个请求，
+内存占用比较小，适用高并发、高流量的场景，
+使用keep-alive的长连接方式，某个线程会一直被占据，即使没有传输数据，也需要一直等待到超时才会被释放。如果过多的线程，被这样占据，也会导致在高并发场景下的无服务线程可用。（该问题在prefork模式下，同样会发生）
+
+Event MPM：事件驱动模型，使用多进程多线程+epoll的模式，它和worker模式很像，最大的区别在于，它解决了keep-alive场景下，长期被占用的线程的资源浪费问题（CentOS8，默认的模型）
+
+以read为例：
+IO：请求（调用者）---------> 服务（被调用者）
+IO类型：
+同步（synchronous）和异步（asynchronous）
+关注点：消息通知机制
+
+阻塞和非阻塞
+关注点：调用者等待被调用者返回结果时的状态（是否被挂起）
+
+2. 五种IO类型
+blocking 阻塞式IO
+non blocking 非阻塞式IO
+multiplexing 复用型IO（事件驱动式）（select，poll，epoll等具体实现）
+signal-driver 信号驱动式IO
+asynchronous 异步IO
+
+
